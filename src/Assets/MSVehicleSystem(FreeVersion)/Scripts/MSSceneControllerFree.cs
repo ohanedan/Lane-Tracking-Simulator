@@ -8,6 +8,8 @@ using System;
 
 [Serializable]
 public class ControlsFree {
+	public KeyCode changeModeKey = KeyCode.M;
+
 	[Space(10)][Tooltip("If this variable is true, the control for this variable will be activated.")]
 	public bool enable_reloadScene_Input = true;
 	[Tooltip("The key that must be pressed to reload the current scene.")]
@@ -68,6 +70,7 @@ public class MSSceneControllerFree : MonoBehaviour {
 	
 	[Space(10)][Tooltip("If this variable is true, useful data will appear on the screen, such as the car's current gear, speed, brakes, among other things.")]
 	public bool UIVisualizer = true;
+	public GameObject ingameConsole;
 	AutonomousScript autonomousObject;
 	//
 	Text gearText;
@@ -205,6 +208,18 @@ public class MSSceneControllerFree : MonoBehaviour {
 
 			vehicleCode = vehicles [currentVehicle].GetComponent<MSVehicleControllerFree> ();
 			
+			if(Input.GetKeyDown (controls.changeModeKey))
+			{
+				if(selectControls == ControlTypeFree.windows)
+				{
+					selectControls = ControlTypeFree.autonomous;
+				}
+				else
+				{
+					selectControls = ControlTypeFree.windows;
+				}
+			}
+
 			if ((Input.GetKeyDown (controls.reloadScene) || autonomousObject.reset) && controls.enable_reloadScene_Input) {
 				SceneManager.LoadScene (sceneName);
 				autonomousObject.reset = false;
@@ -230,9 +245,11 @@ public class MSSceneControllerFree : MonoBehaviour {
 				Time.timeScale = Mathf.Lerp (Time.timeScale, 1.0f, Time.fixedDeltaTime * 5.0f);
 			}
 			//
-			EnableUI (UIVisualizer);
+			EnableUI (UIVisualizer && selectControls != ControlTypeFree.autonomous);
+			ingameConsole.SetActive(selectControls == ControlTypeFree.autonomous);
 			//
-			if (vehicles.Length > 0 && currentVehicle < vehicles.Length && UIVisualizer && vehicleCode) {
+			if (vehicles.Length > 0 && currentVehicle < vehicles.Length && UIVisualizer && vehicleCode
+			&& selectControls != ControlTypeFree.autonomous) {
 				if (vehicleCode.isInsideTheCar) {
 					clampGear = Mathf.Clamp (vehicleCode.currentGear, -1, 1);
 					if (clampGear == 0) {
