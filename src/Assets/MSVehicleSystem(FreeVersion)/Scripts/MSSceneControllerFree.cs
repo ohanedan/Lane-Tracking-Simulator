@@ -70,7 +70,7 @@ public class MSSceneControllerFree : MonoBehaviour {
 	
 	[Space(10)][Tooltip("If this variable is true, useful data will appear on the screen, such as the car's current gear, speed, brakes, among other things.")]
 	public bool UIVisualizer = true;
-	public GameObject ingameConsole;
+	GameObject ingameConsole;
 	AutonomousScript autonomousObject;
 	//
 	Text gearText;
@@ -103,7 +103,8 @@ public class MSSceneControllerFree : MonoBehaviour {
 	void Awake () {
 		error = false;
 		CheckEqualKeyCodes ();
-		autonomousObject = this.GetComponent<AutonomousScript>();
+		ingameConsole = GameObject.Find("/IngameDebugConsole");
+		autonomousObject = GameObject.Find("/Autonomous").GetComponent<AutonomousScript>();
 		MSSceneControllerFree[] sceneControllers = FindObjectsOfType(typeof(MSSceneControllerFree)) as MSSceneControllerFree[];
 		if (sceneControllers.Length > 1) {
 			Debug.LogError ("Only one controller is allowed per scene, otherwise the controllers would conflict with each other.");
