@@ -220,8 +220,9 @@ public class MSSceneControllerFree : MonoBehaviour {
 					selectControls = ControlTypeFree.windows;
 				}
 			}
-
+			ingameConsole.SetActive(selectControls == ControlTypeFree.autonomous);
 			if ((Input.GetKeyDown (controls.reloadScene) || autonomousObject.reset) && controls.enable_reloadScene_Input) {
+				ingameConsole.SetActive(true);
 				SceneManager.LoadScene (sceneName);
 				autonomousObject.reset = false;
 			}
@@ -247,7 +248,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 			}
 			//
 			EnableUI (UIVisualizer && selectControls != ControlTypeFree.autonomous);
-			ingameConsole.SetActive(selectControls == ControlTypeFree.autonomous);
 			//
 			if (vehicles.Length > 0 && currentVehicle < vehicles.Length && UIVisualizer && vehicleCode
 			&& selectControls != ControlTypeFree.autonomous) {

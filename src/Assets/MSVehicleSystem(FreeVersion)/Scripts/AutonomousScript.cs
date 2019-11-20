@@ -136,7 +136,7 @@ public class AutonomousScript : MonoBehaviour
 		yield return null;
 	}
 
-	private void SendMessage(string serverMessage) { 		
+	private void SendSocketMessage(string serverMessage) { 		
 		if (connectedTcpClient == null) {             
 			return;         
 		}  		
