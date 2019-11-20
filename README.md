@@ -16,6 +16,7 @@ Soon
 * [Assetstore - Billboard](https://assetstore.unity.com/packages/3d/environments/urban/billboard-9700)
 * [Github - UnityIngameDebugConsole](https://github.com/yasirkula/UnityIngameDebugConsole)
 * [Github - UnityCapture](https://github.com/schellingb/UnityCapture)
+* [Github - UnityMainThreadDispatcher] https://github.com/PimDeWitte/UnityMainThreadDispatcher
 
 ## License
 [GNU General Public License v3.0](https://github.com/ohanedan/Line-Tracking-Simulator/blob/master/LICENSE)

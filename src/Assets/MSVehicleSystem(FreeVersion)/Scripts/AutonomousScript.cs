@@ -70,7 +70,8 @@ public class AutonomousScript : MonoBehaviour
         DontDestroyOnLoad(this);
         tcpListenerThread = new Thread (new ThreadStart(ListenForIncommingRequests)); 		
 		tcpListenerThread.IsBackground = true; 		
-		tcpListenerThread.Start(); 
+		tcpListenerThread.Start();
+        showLog(0, "Socket listening to port 6161");	
     }
     
     private void ListenForIncommingRequests () { 		
@@ -78,7 +79,8 @@ public class AutonomousScript : MonoBehaviour
 			tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), 6161); 			
 			tcpListener.Start();          			
 			while (true) { 				
-				using (connectedTcpClient = tcpListener.AcceptTcpClient()) {			
+				using (connectedTcpClient = tcpListener.AcceptTcpClient()) {
+                    showLog(0, "Client Connected.");			
 					using (StreamReader reader = new StreamReader(connectedTcpClient.GetStream(), Encoding.UTF8)) { 						
 						string line;
                         while((line = reader.ReadLine()) != null) {
@@ -96,21 +98,43 @@ public class AutonomousScript : MonoBehaviour
                                 pause = package.pause;
                                 handbrake = package.handbrake;
                                 reset = package.reset;
-                                Debug.Log("Socket: " + line);
+                                showLog(0, line);
                             }
                             catch
                             {
-                                Debug.LogWarning("SocketWarning: JSON Parse error.");
+                                showLog(1, "JSON Parse error.");
                             }
                         }		
 					} 				
-				} 			
+				}
+                showLog(0, "Client Disconnected.");		
 			} 		
 		} 		
 		catch (SocketException socketException) { 			
-			Debug.LogError("SocketException: " + socketException.ToString()); 		
+			showLog(2, socketException.ToString()); 		
 		}     
-	}  	
+	}
+
+    public void showLog(int type, string log) {
+		UnityMainThreadDispatcher.Instance().Enqueue(
+            showLogOnTheMainThread(type, log)); 
+	}
+
+    public IEnumerator<string> showLogOnTheMainThread(int type, string log) {
+		if(type == 0)
+        {
+            Debug.Log("[Socket] " + log);
+        }
+        else if(type == 1)
+        {
+            Debug.LogWarning("[SocketWarning] " + log);
+        }
+        else
+        {
+            Debug.LogError("[SocketException] " + log);
+        }
+		yield return null;
+	}
 
 	private void SendMessage(string serverMessage) { 		
 		if (connectedTcpClient == null) {             
@@ -125,7 +149,7 @@ public class AutonomousScript : MonoBehaviour
 			}       
 		} 		
 		catch (SocketException socketException) {             
-			Debug.LogError("SocketException: " + socketException);         
+			showLog(2, socketException.ToString());         
 		} 	
 	} 
 }

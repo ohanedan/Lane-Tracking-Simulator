@@ -54,7 +54,7 @@ public class UnityCapture : MonoBehaviour
 
         if (Application.runInBackground == false)
         {
-            Debug.LogWarning("Application.runInBackground switched to enabled for capture streaming");
+            Debug.LogWarning("[UnityCapture] Application.runInBackground switched to enabled for capture streaming");
             Application.runInBackground = true;
         }
     }
