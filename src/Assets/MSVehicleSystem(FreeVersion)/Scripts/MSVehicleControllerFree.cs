@@ -971,7 +971,7 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		} else {
 			engineInput = 0;
 		}
-		handBrakeTrue = (Input.GetKey(controls.controls.handBrakeInput) || controls.controls.handBrakeAutonomous) && controls.controls.enable_handBrakeInput_Input;
+		handBrakeTrue = controls.controls.handBrakeAutonomous;
 		//
 		DiscoverAverageRpm();
 		InputsCameras ();
@@ -1515,18 +1515,14 @@ public class MSVehicleControllerFree : MonoBehaviour {
 
 	#region CoroutineStartEndTurnOff
 	void TurnOnAndTurnOff(){
-		if (youCanCall && isInsideTheCar && controls.controls.enable_startTheVehicle_Input) {
-			if ((Input.GetKeyDown (controls.controls.startTheVehicle) && !theEngineIsRunning) || (Mathf.Abs(verticalInput) > 0.5f && !theEngineIsRunning)) {
+		if (youCanCall && isInsideTheCar) {
+			if (!theEngineIsRunning || (Mathf.Abs(verticalInput) > 0.5f && !theEngineIsRunning)) {
 				enableEngineSound = true;
 				if (_sounds.engineSound) {
 					engineSoundAUD.pitch = 0.5f;
 				}
 				StartCoroutine ("StartEngineCoroutine", true);
 				StartCoroutine ("StartEngineTime");
-			}
-			if (Input.GetKeyDown (controls.controls.startTheVehicle) && theEngineIsRunning) {
-				StartCoroutine ("StartEngineCoroutine", false);
-				StartCoroutine ("TurnOffEngineTime");
 			}
 		}
 		if (!isInsideTheCar && theEngineIsRunning) {
@@ -1615,28 +1611,14 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		if (Mathf.Abs (verticalInput) < 0.1f && mediumRPM >= 0 && currentGear < 2) {
 			currentGear = 1;
 		}
-		if (controls.selectControls == MSSceneControllerFree.ControlTypeFree.windows) {//joystick OFF && buttons offf
-			if ((Mathf.Abs (Mathf.Clamp (verticalInput, -1f, 0f))) > 0.8f) {
-				if ((KMh < 5 && mediumRPM < 1) || mediumRPM < -2) {
-					currentGear = -1;
-				}
-			}
-			if ((Mathf.Abs (Mathf.Clamp (verticalInput, 0f, 1f))) > 0.8f) {
-				if ((KMh < 5) || (mediumRPM > 2 && currentGear < 2)) {
-					currentGear = 1;
-				}
+		if ((Mathf.Abs (Mathf.Clamp (verticalInput, -1f, 0f))) > 0.2f) {
+			if ((KMh < 5) || mediumRPM < -2) {
+				currentGear = -1;
 			}
 		}
-		else {//joystick ON
-			if ((Mathf.Abs (Mathf.Clamp (verticalInput, -1f, 0f))) > 0.2f) {
-				if ((KMh < 5) || mediumRPM < -2) {
-					currentGear = -1;
-				}
-			}
-			if ((Mathf.Abs (Mathf.Clamp (verticalInput, 0f, 1f))) > 0.2f) {
-				if ((KMh < 5) || (mediumRPM > 2 && currentGear < 2)) {
-					currentGear = 1;
-				}
+		if ((Mathf.Abs (Mathf.Clamp (verticalInput, 0f, 1f))) > 0.2f) {
+			if ((KMh < 5) || (mediumRPM > 2 && currentGear < 2)) {
+				currentGear = 1;
 			}
 		}
 
@@ -1759,7 +1741,7 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		if (currentBrakeValue > 0.1f) {
 			return 0;
 		}
-		if ((Input.GetKey (controls.controls.handBrakeInput) || controls.controls.handBrakeAutonomous) && controls.controls.enable_handBrakeInput_Input) {
+		if (controls.controls.handBrakeAutonomous) {
 			return 0;
 		}
 		if (currentGear < 0) {
@@ -1854,7 +1836,7 @@ public class MSVehicleControllerFree : MonoBehaviour {
 		} else {
 			handBrake_Input = 0;
 		}
-		if ((Input.GetKey (controls.controls.handBrakeInput) || controls.controls.handBrakeAutonomous) && controls.controls.enable_handBrakeInput_Input) {
+		if (controls.controls.handBrakeAutonomous) {
 			handBrake_Input = 2;
 		}
 		handBrake_Input = handBrake_Input * 1000;

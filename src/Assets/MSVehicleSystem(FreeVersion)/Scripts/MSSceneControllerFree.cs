@@ -8,22 +8,6 @@ using System;
 
 [Serializable]
 public class ControlsFree {
-	public KeyCode changeModeKey = KeyCode.M;
-
-	[Space(10)][Tooltip("If this variable is true, the control for this variable will be activated.")]
-	public bool enable_reloadScene_Input = true;
-	[Tooltip("The key that must be pressed to reload the current scene.")]
-	public KeyCode reloadScene = KeyCode.R;
-
-	[Space(10)][Tooltip("If this variable is true, the control for this variable will be activated.")]
-	public bool enable_startTheVehicle_Input = true;
-	[Tooltip("The key that must be pressed to turn the vehicle engine on or off.")]
-	public KeyCode startTheVehicle = KeyCode.F;
-
-	[Space(10)][Tooltip("If this variable is true, the control for this variable will be activated.")]
-	public bool enable_handBrakeInput_Input = true;
-	[Tooltip("The key that must be pressed to activate or deactivate the vehicle hand brake.")]
-	public KeyCode handBrakeInput = KeyCode.Space;
 	[HideInInspector]
 	public bool handBrakeAutonomous = false;
 
@@ -31,42 +15,15 @@ public class ControlsFree {
 	public bool enable_switchingCameras_Input = true;
 	[Tooltip("The key that must be pressed to toggle between the cameras of the vehicle.")]
 	public KeyCode switchingCameras = KeyCode.C;
-
-	[Space(10)][Tooltip("If this variable is true, the control for this variable will be activated.")]
-	public bool enable_pause_Input = true;
-	[Tooltip("The key that must be pressed to pause the game.")]
-	public KeyCode pause = KeyCode.P;
 }
 
 public class MSSceneControllerFree : MonoBehaviour {
-
-	#region defineInputs
-	[Tooltip("Vertical input recognized by the system")]
-	public string _verticalInput = "Vertical";
-
-	[Tooltip("Horizontal input recognized by the system")]
-	public string _horizontalInput = "Horizontal";
-
-	[Tooltip("Horizontal input for camera movements")]
-	public string _mouseXInput = "Mouse X";
-
-	[Tooltip("Vertical input for camera movements")]
-	public string _mouseYInput = "Mouse Y";
-
-	[Tooltip("Scroll input, to zoom in and out of the cameras.")]
-	public string _mouseScrollWheelInput = "Mouse ScrollWheel";
-	#endregion
-
-	public enum ControlTypeFree{windows, autonomous};
-
 	[Space(10)][Tooltip("Here you can configure the vehicle controls, choose the desired inputs and also, deactivate the unwanted ones.")]
 	public ControlsFree controls;
 	[Tooltip("All vehicles in the scene containing the 'MS Vehicle Controller' component must be associated with this list.")]
 	public GameObject[] vehicles;
 	[Space(10)][Tooltip("This variable is responsible for defining the vehicle in which the player will start. It represents an index of the 'vehicles' list, where the number placed here represents the index of the list. The selected index will be the starting vehicle.")]
 	public int startingVehicle = 0;
-	[Tooltip("Here you can select the type of control, where 'Mobile Button' will cause buttons to appear on the screen so that vehicles can be controlled, 'Mobile Joystick' will cause two Joysticks to appear on the screen so vehicles can be controlled, And 'windows' will allow vehicles to be controlled through the computer.")]
-	public ControlTypeFree selectControls = ControlTypeFree.windows;
 	
 	[Space(10)][Tooltip("If this variable is true, useful data will appear on the screen, such as the car's current gear, speed, brakes, among other things.")]
 	public bool UIVisualizer = true;
@@ -189,53 +146,18 @@ public class MSSceneControllerFree : MonoBehaviour {
 	void Update () {
 		if (!error) {
 			#region customizeInputsValues
-			switch (selectControls) {
-			case ControlTypeFree.windows:
-				verticalInput = Input.GetAxis (_verticalInput);
-				horizontalInput = Input.GetAxis (_horizontalInput);
-				mouseXInput = Input.GetAxis (_mouseXInput);
-				mouseYInput = Input.GetAxis (_mouseYInput);
-				mouseScrollWheelInput = Input.GetAxis (_mouseScrollWheelInput);
-				break;
-			case ControlTypeFree.autonomous:
-				//Autonomous settings
-				verticalInput = autonomousObject.verticalVal/255.0f;
-				horizontalInput = autonomousObject.horizontalVal/127.0f;
-				break;
-			}
+			verticalInput = autonomousObject.verticalVal/255.0f;
+			horizontalInput = autonomousObject.horizontalVal/127.0f;
 			#endregion
 
 			vehicleCode = vehicles [currentVehicle].GetComponent<MSVehicleControllerFree> ();
-			
-			if(Input.GetKeyDown (controls.changeModeKey))
-			{
-				if(selectControls == ControlTypeFree.windows)
-				{
-					selectControls = ControlTypeFree.autonomous;
-				}
-				else
-				{
-					selectControls = ControlTypeFree.windows;
-				}
-			}
-			if ((Input.GetKeyDown (controls.reloadScene) || autonomousObject.reset) && controls.enable_reloadScene_Input) {
+
+			if (autonomousObject.reset) {
 				SceneManager.LoadScene (sceneName);
 				autonomousObject.reset = false;
 			}
 			controls.handBrakeAutonomous = autonomousObject.handbrake;
-			if(controls.enable_pause_Input)
-			{
-				if(selectControls == ControlTypeFree.autonomous)
-				{
-					pause = autonomousObject.pause;
-				}
-				else
-				{
-					if ((Input.GetKeyDown (controls.pause))) {
-						pause = !pause;
-					}
-				}
-			}
+			pause = autonomousObject.pause;
 			
 			if (pause) {
 				Time.timeScale = Mathf.Lerp (Time.timeScale, 0.0f, Time.fixedDeltaTime * 5.0f);
@@ -243,10 +165,9 @@ public class MSSceneControllerFree : MonoBehaviour {
 				Time.timeScale = Mathf.Lerp (Time.timeScale, 1.0f, Time.fixedDeltaTime * 5.0f);
 			}
 			//
-			EnableUI (UIVisualizer && selectControls != ControlTypeFree.autonomous);
+			EnableUI (UIVisualizer);
 			//
-			if (vehicles.Length > 0 && currentVehicle < vehicles.Length && UIVisualizer && vehicleCode
-			&& selectControls != ControlTypeFree.autonomous) {
+			if (vehicles.Length > 0 && currentVehicle < vehicles.Length && UIVisualizer && vehicleCode) {
 				if (vehicleCode.isInsideTheCar) {
 					clampGear = Mathf.Clamp (vehicleCode.currentGear, -1, 1);
 					if (clampGear == 0) {
