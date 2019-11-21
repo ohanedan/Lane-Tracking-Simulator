@@ -11,8 +11,6 @@ public class ControlsFree {
 	[HideInInspector]
 	public bool handBrakeAutonomous = false;
 
-	[Space(10)][Tooltip("If this variable is true, the control for this variable will be activated.")]
-	public bool enable_switchingCameras_Input = true;
 	[Tooltip("The key that must be pressed to toggle between the cameras of the vehicle.")]
 	public KeyCode switchingCameras = KeyCode.C;
 }
@@ -24,16 +22,8 @@ public class MSSceneControllerFree : MonoBehaviour {
 	public GameObject[] vehicles;
 	[Space(10)][Tooltip("This variable is responsible for defining the vehicle in which the player will start. It represents an index of the 'vehicles' list, where the number placed here represents the index of the list. The selected index will be the starting vehicle.")]
 	public int startingVehicle = 0;
-	
-	[Space(10)][Tooltip("If this variable is true, useful data will appear on the screen, such as the car's current gear, speed, brakes, among other things.")]
-	public bool UIVisualizer = true;
+
 	AutonomousScript autonomousObject;
-	//
-	Text gearText;
-	Text kmhText;
-	Text handBrakeText;
-	Text pauseText;
-	Image backGround;
 
 	#region customizeInputs
 	[HideInInspector]
@@ -49,7 +39,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 	#endregion
 
 	int currentVehicle = 0;
-	int clampGear;
 	bool pause = false;
 	bool error;
 	bool enterAndExitBool;
@@ -100,14 +89,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 			return;
 		}
 		else {
-			//UI transform.find
-			gearText = transform.Find ("Canvas/Strings/gearText").GetComponent<Text> ();
-			kmhText = transform.Find ("Canvas/Strings/kmhText").GetComponent<Text> ();
-			handBrakeText = transform.Find ("Canvas/Strings/handBrakeText").GetComponent<Text> ();
-			pauseText = transform.Find ("Canvas/Strings/pauseText").GetComponent<Text> ();
-			backGround = transform.Find ("Canvas/Strings").GetComponent<Image> ();
-			//end transform.find
-
 			vehicleCode = vehicles [currentVehicle].GetComponent<MSVehicleControllerFree> ();
 			
 			Time.timeScale = 1;
@@ -164,32 +145,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 			} else {
 				Time.timeScale = Mathf.Lerp (Time.timeScale, 1.0f, Time.fixedDeltaTime * 5.0f);
 			}
-			//
-			EnableUI (UIVisualizer);
-			//
-			if (vehicles.Length > 0 && currentVehicle < vehicles.Length && UIVisualizer && vehicleCode) {
-				if (vehicleCode.isInsideTheCar) {
-					clampGear = Mathf.Clamp (vehicleCode.currentGear, -1, 1);
-					if (clampGear == 0) {
-						clampGear = 1;
-					}
-
-					gearText.text = "Gear: " + vehicleCode.currentGear;
-					kmhText.text = "Velocity(km/h): " + (int)(vehicleCode.KMh * clampGear);
-					handBrakeText.text = "HandBreak: " + vehicleCode.handBrakeTrue;
-					pauseText.text = "Pause: " + pause;
-				}
-			}
-		}
-	}
-
-	void EnableUI(bool enable){
-		if (gearText.gameObject.activeSelf != enable) {
-			gearText.gameObject.SetActive (enable);
-			kmhText.gameObject.SetActive (enable);
-			handBrakeText.gameObject.SetActive (enable);
-			pauseText.gameObject.SetActive (enable);
-			backGround.gameObject.SetActive (enable);
 		}
 	}
 
@@ -204,20 +159,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 				vehicles [currentVehicle].GetComponent<MSVehicleControllerFree> ().EnterInVehicle ();
 				vehicleCode = vehicles [currentVehicle].GetComponent<MSVehicleControllerFree> ();
 			}
-		}
-	}
-
-	void Mobile_CameraInput(){
-		if (!error) {
-			if (vehicleCode.isInsideTheCar) {
-				vehicleCode.InputsCamerasMobile ();
-			}
-		}
-	}
-
-	void Mobile_EnterAndExitVehicle(){
-		if (!error && !enterAndExitBool) {
-			enterAndExitBool = true;
 		}
 	}
 }

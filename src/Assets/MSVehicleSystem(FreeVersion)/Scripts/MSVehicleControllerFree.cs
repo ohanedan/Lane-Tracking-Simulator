@@ -754,7 +754,7 @@ public class MSVehicleControllerFree : MonoBehaviour {
 	}
 
 	void InputsCameras(){
-		if (isInsideTheCar && controls.controls.enable_switchingCameras_Input) {
+		if (isInsideTheCar) {
 			if (Input.GetKeyDown (controls.controls.switchingCameras) && indexCamera < (_cameras.cameras.Length - 1)) {
 				indexCamera++;
 				EnableCameras (indexCamera);
@@ -766,7 +766,7 @@ public class MSVehicleControllerFree : MonoBehaviour {
 	}
 
 	public void InputsCamerasMobile(){
-		if (isInsideTheCar && controls.controls.enable_switchingCameras_Input) {
+		if (isInsideTheCar) {
 			if (indexCamera < (_cameras.cameras.Length - 1)) {
 				indexCamera++;
 				EnableCameras (indexCamera);
