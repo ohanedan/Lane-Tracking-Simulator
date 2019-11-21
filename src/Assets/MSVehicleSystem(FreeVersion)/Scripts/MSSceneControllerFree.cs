@@ -70,7 +70,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 	
 	[Space(10)][Tooltip("If this variable is true, useful data will appear on the screen, such as the car's current gear, speed, brakes, among other things.")]
 	public bool UIVisualizer = true;
-	GameObject ingameConsole;
 	AutonomousScript autonomousObject;
 	//
 	Text gearText;
@@ -103,7 +102,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 	void Awake () {
 		error = false;
 		CheckEqualKeyCodes ();
-		ingameConsole = GameObject.Find("/IngameDebugConsole");
 		autonomousObject = GameObject.Find("/Autonomous").GetComponent<AutonomousScript>();
 		MSSceneControllerFree[] sceneControllers = FindObjectsOfType(typeof(MSSceneControllerFree)) as MSSceneControllerFree[];
 		if (sceneControllers.Length > 1) {
@@ -220,9 +218,7 @@ public class MSSceneControllerFree : MonoBehaviour {
 					selectControls = ControlTypeFree.windows;
 				}
 			}
-			ingameConsole.SetActive(selectControls == ControlTypeFree.autonomous);
 			if ((Input.GetKeyDown (controls.reloadScene) || autonomousObject.reset) && controls.enable_reloadScene_Input) {
-				ingameConsole.SetActive(true);
 				SceneManager.LoadScene (sceneName);
 				autonomousObject.reset = false;
 			}
