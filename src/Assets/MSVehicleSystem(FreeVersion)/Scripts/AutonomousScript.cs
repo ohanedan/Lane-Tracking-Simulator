@@ -104,6 +104,7 @@ public class AutonomousScript : MonoBehaviour
                             {
                                 showLog(1, "JSON Parse error.");
                             }
+                            SendSocketMessage("ok");
                         }		
 					} 				
 				}
