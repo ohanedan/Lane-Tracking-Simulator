@@ -10,17 +10,12 @@ using System;
 public class ControlsFree {
 	[HideInInspector]
 	public bool handBrakeAutonomous = false;
-
-	[Tooltip("The key that must be pressed to toggle between the cameras of the vehicle.")]
 	public KeyCode switchingCameras = KeyCode.C;
 }
 
 public class MSSceneControllerFree : MonoBehaviour {
-	[Space(10)][Tooltip("Here you can configure the vehicle controls, choose the desired inputs and also, deactivate the unwanted ones.")]
 	public ControlsFree controls;
-	[Tooltip("All vehicles in the scene containing the 'MS Vehicle Controller' component must be associated with this list.")]
 	public GameObject[] vehicles;
-	[Space(10)][Tooltip("This variable is responsible for defining the vehicle in which the player will start. It represents an index of the 'vehicles' list, where the number placed here represents the index of the list. The selected index will be the starting vehicle.")]
 	public int startingVehicle = 0;
 
 	AutonomousScript autonomousObject;
@@ -41,7 +36,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 	int currentVehicle = 0;
 	bool pause = false;
 	bool error;
-	bool enterAndExitBool;
 	string sceneName;
 
 	MSVehicleControllerFree vehicleCode;
@@ -92,7 +86,6 @@ public class MSSceneControllerFree : MonoBehaviour {
 			vehicleCode = vehicles [currentVehicle].GetComponent<MSVehicleControllerFree> ();
 			
 			Time.timeScale = 1;
-			enterAndExitBool = false;
 			sceneName = SceneManager.GetActiveScene ().name;
 			currentVehicle = startingVehicle;
 			//
