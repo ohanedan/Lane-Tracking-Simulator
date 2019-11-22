@@ -14,7 +14,6 @@ Soon
 * [Assetstore - MS Vehicle System (free version)](https://assetstore.unity.com/packages/tools/physics/ms-vehicle-system-free-version-90214)
 * [Assetstore - Race Tracks](https://assetstore.unity.com/packages/3d/environments/roadways/race-tracks-140501)
 * [Assetstore - Billboard](https://assetstore.unity.com/packages/3d/environments/urban/billboard-9700)
-* [Github - UnityCapture](https://github.com/schellingb/UnityCapture)
 
 ## License
 [GNU General Public License v3.0](https://github.com/ohanedan/Lane-Tracking-Simulator/blob/master/LICENSE)

@@ -78,7 +78,6 @@ public class AutonomousScript : MonoBehaviour
             Byte[] bytes = new Byte[1024];          			
 			while (true) { 				
 				using (connectedTcpClient = tcpListener.AcceptTcpClient()) {
-                    Debug.Log("connected");
                     SendSocketMessage("ok");
                     using (NetworkStream stream = connectedTcpClient.GetStream()) { 						
 						int length; 											
@@ -87,11 +86,9 @@ public class AutonomousScript : MonoBehaviour
 							Array.Copy(bytes, 0, incommingData, 0, length);						
 							string clientMessage = Encoding.ASCII.GetString(incommingData); 							
                             SendSocketMessage(parseIncomingData(clientMessage));					
-							Debug.Log(clientMessage); 	
 						} 					
 					}		
 				}
-                Debug.Log("disconnected");	
 			} 		
 		} 		
 		catch (SocketException ex) { 			
