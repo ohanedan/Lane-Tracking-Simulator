@@ -35,7 +35,7 @@ public class UnityCapture : MonoBehaviour
     public enum EResizeMode { Disabled = 0, LinearResize = 1 }
     public enum EMirrorMode { Disabled = 0, MirrorHorizontally = 1 }
     public enum ECaptureSendResult { SUCCESS = 0, WARNING_FRAMESKIP = 1, WARNING_CAPTUREINACTIVE = 2, ERROR_UNSUPPORTEDGRAPHICSDEVICE = 100, ERROR_PARAMETER = 101, ERROR_TOOLARGERESOLUTION = 102, ERROR_TEXTUREFORMAT = 103, ERROR_READTEXTURE = 104, ERROR_INVALIDCAPTUREINSTANCEPTR = 200 };
-
+    public bool sendCapture = false;
     [SerializeField] [Tooltip("Capture device index")] public ECaptureDevice CaptureDevice = ECaptureDevice.CaptureDevice1;
     [SerializeField] [Tooltip("Scale image if Unity and capture resolution don't match (can introduce frame dropping, not recommended)")] public EResizeMode ResizeMode = EResizeMode.Disabled;
     [SerializeField] [Tooltip("How many milliseconds to wait for a new frame until sending is considered to be stopped")] public int Timeout = 1000;
@@ -71,8 +71,8 @@ public class UnityCapture : MonoBehaviour
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        //if(!Application.isFocused) return;
         Graphics.Blit(source, destination);
+        if(!sendCapture) return;
         switch (CaptureInterface.SendTexture(source, Timeout, DoubleBuffering, ResizeMode, MirrorMode))
         {
             case ECaptureSendResult.SUCCESS: break;
